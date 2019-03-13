@@ -18,6 +18,35 @@
   puts "例#{t}の答え"
   File.open("data00#{t}.txt", "r"){ |f|
     # ここにプログラムを記述してください。
+
+    # 読み込んだ内容をx[行数-1]で管理できるように取得
+    x = f.readlines
+    x.each do |x| # \nを消去するためchomp!
+      x.chomp!
+    end
+
+    # resultsハッシュを作成したいな〜。resultsは{name => value}の形式
+    name = x[1].split(" ") # 2行目、つまり人の名前を配列にして取得
+    value = [] # resultsハッシュ用に空のvalue配列を作成
+    n = x[0].to_i #人数nを取得
+    n.times do # 人数分、０をvalueに追加
+      value << 0
+    end
+    ary = [name, value].transpose # nameとvalueをあわせた配列の作成。resultsのもと
+    results = Hash[*ary.flatten] # resultsハッシュができた
+
+    # 名前と値段の文を配列に
+    m = x[2].to_i #学習回数mを取得
+    ary = x[3, m]
+    name_price = ary.map! {|a| a.split(" ")} # 名前と学習コストの配列を作成
+
+    # resulutsにname_priceのpriceを足してく
+    name_price.each do |name, price|
+      results[name] += price.to_i
+    end
+
+    #resultsハッシュをvalueでソートし、降順にした後、ハッシュ化
+    p results.sort_by{|k, v| v }.reverse.to_h
   }
 end
 
